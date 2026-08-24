@@ -1,0 +1,199 @@
+<svg viewBox="0 0 1600 1050" xmlns="http://www.w3.org/2000/svg" font-family="'Segoe UI', Arial, sans-serif">
+  <defs>
+    <marker id="rel" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#666"/>
+    </marker>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fafafa"/><stop offset="100%" stop-color="#eee"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="1050" fill="url(#bg)"/>
+
+  <text x="800" y="42" text-anchor="middle" font-size="28" font-weight="700" fill="#7b241c">VITA — Dicionário de Dados · Diagrama de Relacionamento</text>
+  <text x="800" y="66" text-anchor="middle" font-size="14" fill="#555">Camada Gold (Amazon Athena) — chaves, granularidade e relacionamentos entre as tabelas</text>
+
+  <!-- LEGENDA -->
+  <rect x="20" y="90" width="1560" height="34" rx="8" fill="#fff" stroke="#ddd"/>
+  <rect x="36" y="100" width="14" height="14" rx="3" fill="#d4af37"/>
+  <text x="56" y="111" font-size="12" fill="#333">Fato</text>
+  <rect x="120" y="100" width="14" height="14" rx="3" fill="#5d6d7e"/>
+  <text x="140" y="111" font-size="12" fill="#333">Dimensão</text>
+  <rect x="240" y="100" width="14" height="14" rx="3" fill="#27ae60"/>
+  <text x="260" y="111" font-size="12" fill="#333">Referência (External Table / CSV)</text>
+  <rect x="460" y="100" width="14" height="14" rx="3" fill="#8c4fff"/>
+  <text x="480" y="111" font-size="12" fill="#333">KPI / agregado (Machine Learning)</text>
+  <rect x="680" y="100" width="14" height="14" rx="3" fill="#ff4b4b"/>
+  <text x="700" y="111" font-size="12" fill="#333">View de negócio (consumida pelo dashboard)</text>
+  <text x="1000" y="111" font-size="11" fill="#888">PK = chave primária&#160;&#160;&#160;&#160;FK = chave estrangeira&#160;&#160;&#160;&#160;(nulo) = nulo na fonte atual</text>
+
+  <!-- =================== municipios_referencia =================== -->
+  <g>
+    <rect x="30" y="160" width="270" height="185" rx="10" fill="#27ae60" stroke="#1e8449" stroke-width="1.5"/>
+    <rect x="30" y="160" width="270" height="34" rx="10" fill="#1e8449"/>
+    <rect x="30" y="182" width="270" height="12" fill="#1e8449"/>
+    <text x="165" y="182" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">municipios_referencia</text>
+    <text x="42" y="212" font-size="11.5" fill="#fff">PK codigo_municipio&#160;&#160;BIGINT</text>
+    <text x="42" y="230" font-size="11.5" fill="#fff">nome_municipio&#160;&#160;STRING</text>
+    <text x="42" y="248" font-size="11.5" fill="#fff">uf&#160;&#160;STRING</text>
+    <text x="42" y="266" font-size="11.5" fill="#fff">regiao_saude&#160;&#160;STRING</text>
+    <text x="42" y="284" font-size="11.5" fill="#fff">populacao&#160;&#160;BIGINT</text>
+    <text x="42" y="302" font-size="11.5" fill="#fff">meta_leitos_1000hab&#160;&#160;DOUBLE</text>
+    <text x="42" y="326" font-size="10" fill="#d5f5e3">Fonte 3 · CSV (IBGE) · 645 municípios SP</text>
+  </g>
+
+  <!-- =================== dim_hospital =================== -->
+  <g>
+    <rect x="30" y="400" width="270" height="270" rx="10" fill="#5d6d7e" stroke="#34495e" stroke-width="1.5"/>
+    <rect x="30" y="400" width="270" height="34" rx="10" fill="#34495e"/>
+    <rect x="30" y="422" width="270" height="12" fill="#34495e"/>
+    <text x="165" y="422" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">dim_hospital</text>
+    <text x="42" y="452" font-size="11.5" fill="#fff">PK cnes_id&#160;&#160;BIGINT</text>
+    <text x="42" y="470" font-size="11.5" fill="#fff">nome_estabelecimento&#160;&#160;STRING</text>
+    <text x="42" y="488" font-size="11.5" fill="#fff">codigo_tipo_unidade&#160;&#160;INT</text>
+    <text x="42" y="506" font-size="11.5" fill="#fff">eh_tipo_hospitalar&#160;&#160;BOOLEAN</text>
+    <text x="42" y="524" font-size="11.5" fill="#fff">uf&#160;&#160;STRING</text>
+    <text x="42" y="542" font-size="11.5" fill="#fff">FK codigo_municipio&#160;&#160;BIGINT</text>
+    <text x="42" y="560" font-size="11.5" fill="#fff">latitude, longitude&#160;&#160;DOUBLE</text>
+    <text x="42" y="578" font-size="11.5" fill="#fff">leitos_totais&#160;&#160;INT  (nulo)</text>
+    <text x="42" y="596" font-size="11.5" fill="#fff">leitos_sus&#160;&#160;INT  (nulo)</text>
+    <text x="42" y="614" font-size="11.5" fill="#fff">possui_atendimento_hospitalar&#160;&#160;INT</text>
+    <text x="42" y="644" font-size="10" fill="#d6dbdf">Fonte 2 · CNES (API) · 808 estabelecimentos</text>
+    <text x="42" y="658" font-size="10" fill="#d6dbdf">Nulo: leitos indisponíveis no endpoint atual</text>
+  </g>
+
+  <!-- =================== dim_tempo =================== -->
+  <g>
+    <rect x="30" y="700" width="270" height="140" rx="10" fill="#5d6d7e" stroke="#34495e" stroke-width="1.5"/>
+    <rect x="30" y="700" width="270" height="34" rx="10" fill="#34495e"/>
+    <rect x="30" y="722" width="270" height="12" fill="#34495e"/>
+    <text x="165" y="722" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">dim_tempo</text>
+    <text x="42" y="752" font-size="11.5" fill="#fff">ano&#160;&#160;INT</text>
+    <text x="42" y="770" font-size="11.5" fill="#fff">mes&#160;&#160;INT</text>
+    <text x="42" y="788" font-size="11.5" fill="#fff">semana_epidemiologica&#160;&#160;INT</text>
+    <text x="42" y="806" font-size="11.5" fill="#fff">trimestre&#160;&#160;INT</text>
+    <text x="42" y="828" font-size="10" fill="#d6dbdf">Derivada de fato_internacoes.DT_INTER</text>
+  </g>
+
+  <!-- =================== fato_internacoes (centro) =================== -->
+  <g>
+    <rect x="380" y="330" width="290" height="290" rx="10" fill="#d4af37" stroke="#b7950b" stroke-width="2"/>
+    <rect x="380" y="330" width="290" height="36" rx="10" fill="#b7950b"/>
+    <rect x="380" y="354" width="290" height="12" fill="#b7950b"/>
+    <text x="525" y="353" text-anchor="middle" font-size="15" font-weight="700" fill="#fff">fato_internacoes</text>
+    <text x="392" y="386" font-size="11.5" fill="#fff">FK cnes_id&#160;&#160;BIGINT</text>
+    <text x="392" y="404" font-size="11.5" fill="#fff">municipio_id&#160;&#160;BIGINT</text>
+    <text x="392" y="422" font-size="11.5" fill="#fff">FK ano&#160;&#160;INT&#160;&#160;(partição)</text>
+    <text x="392" y="440" font-size="11.5" fill="#fff">FK mes&#160;&#160;INT&#160;&#160;(partição)</text>
+    <text x="392" y="458" font-size="11.5" fill="#fff">semana_epidemiologica&#160;&#160;INT</text>
+    <text x="392" y="476" font-size="11.5" fill="#fff">cid_principal&#160;&#160;STRING</text>
+    <text x="392" y="494" font-size="11.5" fill="#fff">valor_total&#160;&#160;DOUBLE</text>
+    <text x="392" y="512" font-size="11.5" fill="#fff">dias_permanencia&#160;&#160;INT</text>
+    <line x1="392" y1="530" x2="658" y2="530" stroke="#f5eecb" stroke-width="1"/>
+    <text x="392" y="552" font-size="10.5" fill="#fff">Granularidade: 1 linha = 1 internação (AIH)</text>
+    <text x="392" y="568" font-size="10.5" fill="#fff">Fonte 1 · SIH/SUS (PySUS) · 16,78 milhões de linhas</text>
+    <text x="392" y="584" font-size="10.5" fill="#fff">Recorte do dashboard: Dengue (CID A90) · SP · 2023-2025</text>
+    <text x="392" y="605" font-size="10.5" fill="#fff5cc" font-weight="700">Tabela FATO central do modelo</text>
+  </g>
+
+  <!-- =================== kpi_pressao_hospitalar =================== -->
+  <g>
+    <rect x="730" y="160" width="280" height="230" rx="10" fill="#8c4fff" stroke="#6c3ce0" stroke-width="1.5"/>
+    <rect x="730" y="160" width="280" height="34" rx="10" fill="#6c3ce0"/>
+    <rect x="730" y="182" width="280" height="12" fill="#6c3ce0"/>
+    <text x="870" y="182" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">kpi_pressao_hospitalar</text>
+    <text x="742" y="212" font-size="11.5" fill="#fff">FK cnes_id&#160;&#160;BIGINT</text>
+    <text x="742" y="230" font-size="11.5" fill="#fff">FK ano, mes&#160;&#160;INT</text>
+    <text x="742" y="248" font-size="11.5" fill="#fff">qtd_internacoes&#160;&#160;BIGINT</text>
+    <text x="742" y="266" font-size="11.5" fill="#fff">permanencia_media&#160;&#160;DOUBLE</text>
+    <text x="742" y="284" font-size="11.5" fill="#fff">pacientes_criticos&#160;&#160;BIGINT</text>
+    <text x="742" y="302" font-size="11.5" fill="#fff">cluster&#160;&#160;INT&#160;&#160;(K-Means)</text>
+    <text x="742" y="320" font-size="11.5" fill="#fff">nivel_risco&#160;&#160;STRING</text>
+    <text x="742" y="338" font-size="11.5" fill="#fff">indice_pressao&#160;&#160;DOUBLE&#160;&#160;(0-100)</text>
+    <text x="742" y="362" font-size="10" fill="#e8dcff">Granularidade: hospital x mês, todas as doenças</text>
+    <text x="742" y="376" font-size="10" fill="#e8dcff">Calculada no Glue via scikit-learn (K-Means)</text>
+  </g>
+
+  <!-- =================== kpi_tendencia_doencas =================== -->
+  <g>
+    <rect x="730" y="420" width="280" height="200" rx="10" fill="#8c4fff" stroke="#6c3ce0" stroke-width="1.5"/>
+    <rect x="730" y="420" width="280" height="34" rx="10" fill="#6c3ce0"/>
+    <rect x="730" y="442" width="280" height="12" fill="#6c3ce0"/>
+    <text x="870" y="442" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">kpi_tendencia_doencas</text>
+    <text x="742" y="472" font-size="11.5" fill="#fff">FK uf&#160;&#160;STRING</text>
+    <text x="742" y="490" font-size="11.5" fill="#fff">FK cid_principal&#160;&#160;STRING</text>
+    <text x="742" y="508" font-size="11.5" fill="#fff">ano, mes, semana_epidemiologica&#160;&#160;INT</text>
+    <text x="742" y="526" font-size="11.5" fill="#fff">qtd_casos&#160;&#160;BIGINT</text>
+    <text x="742" y="544" font-size="11.5" fill="#fff">qtd_casos_semana_anterior&#160;&#160;BIGINT</text>
+    <text x="742" y="562" font-size="11.5" fill="#fff">variacao_pct&#160;&#160;DOUBLE</text>
+    <text x="742" y="586" font-size="10" fill="#e8dcff">Granularidade: uf x doença x semana</text>
+    <text x="742" y="600" font-size="10" fill="#e8dcff">variacao_pct = crescimento vs. semana anterior</text>
+  </g>
+
+  <!-- =================== VIEWS (coluna direita) =================== -->
+  <text x="1310" y="150" text-anchor="middle" font-size="14" font-weight="700" fill="#333">VIEWS DE NEGÓCIO</text>
+  <text x="1310" y="168" text-anchor="middle" font-size="10.5" fill="#777">consumidas pelo dashboard Streamlit</text>
+
+  <g>
+    <rect x="1150" y="185" width="320" height="60" rx="8" fill="#ff4b4b"/>
+    <text x="1310" y="208" text-anchor="middle" font-size="12.5" font-weight="700" fill="#fff">vw_acompanhamento_geral</text>
+    <text x="1310" y="226" text-anchor="middle" font-size="10" fill="#ffe0e0">fato + dim_hospital + municípios + kpi_pressao</text>
+    <text x="1310" y="240" text-anchor="middle" font-size="9.5" fill="#ffcccc">→ aba "Visão Geral"</text>
+  </g>
+  <g>
+    <rect x="1150" y="255" width="320" height="55" rx="8" fill="#ff4b4b"/>
+    <text x="1310" y="276" text-anchor="middle" font-size="12.5" font-weight="700" fill="#fff">vw_tendencia_doencas</text>
+    <text x="1310" y="293" text-anchor="middle" font-size="10" fill="#ffe0e0">agrega kpi_tendencia_doencas por mês</text>
+    <text x="1310" y="305" text-anchor="middle" font-size="9.5" fill="#ffcccc">→ aba "Visão Evolutiva"</text>
+  </g>
+  <g>
+    <rect x="1150" y="320" width="320" height="60" rx="8" fill="#ff4b4b"/>
+    <text x="1310" y="343" text-anchor="middle" font-size="12.5" font-weight="700" fill="#fff">vw_pressao_por_regiao</text>
+    <text x="1310" y="360" text-anchor="middle" font-size="10" fill="#ffe0e0">kpi_pressao + dim_hospital + fato + municípios</text>
+    <text x="1310" y="374" text-anchor="middle" font-size="9.5" fill="#ffcccc">→ aba "Mapa" (base p/ mapa de dengue)</text>
+  </g>
+  <g>
+    <rect x="1150" y="390" width="320" height="60" rx="8" fill="#ff4b4b"/>
+    <text x="1310" y="413" text-anchor="middle" font-size="12.5" font-weight="700" fill="#fff">vw_ranking_hospitais_criticos</text>
+    <text x="1310" y="430" text-anchor="middle" font-size="10" fill="#ffe0e0">kpi_pressao + dim_hospital + municípios</text>
+    <text x="1310" y="444" text-anchor="middle" font-size="9.5" fill="#ffcccc">→ aba "Hospitais Mais Afetados"</text>
+  </g>
+
+  <!-- =================== RELACIONAMENTOS =================== -->
+  <!-- municipios_referencia <-> dim_hospital -->
+  <line x1="300" y1="240" x2="380" y2="240" stroke="#666" stroke-width="1.6" marker-end="url(#rel)"/>
+  <line x1="300" y1="240" x2="300" y2="480" stroke="#666" stroke-width="1.6"/>
+  <line x1="300" y1="480" x2="380" y2="480" stroke="#666" stroke-width="1.6" marker-end="url(#rel)"/>
+  <text x="308" y="360" font-size="10" fill="#666" transform="rotate(90,308,360)">codigo_municipio</text>
+
+  <!-- dim_hospital -> fato_internacoes -->
+  <line x1="300" y1="460" x2="380" y2="460" stroke="#666" stroke-width="1.6" marker-end="url(#rel)"/>
+  <text x="315" y="452" font-size="10" fill="#666">cnes_id</text>
+
+  <!-- dim_tempo -> fato_internacoes -->
+  <line x1="300" y1="770" x2="525" y2="770" stroke="#666" stroke-width="1.6"/>
+  <line x1="525" y1="770" x2="525" y2="622" stroke="#666" stroke-width="1.6" marker-end="url(#rel)"/>
+  <text x="330" y="762" font-size="10" fill="#666">ano, mes</text>
+
+  <!-- fato_internacoes -> kpi_pressao_hospitalar -->
+  <line x1="670" y1="420" x2="730" y2="330" stroke="#666" stroke-width="1.6" marker-end="url(#rel)"/>
+  <text x="678" y="380" font-size="10" fill="#666">cnes_id, ano, mes</text>
+
+  <!-- fato_internacoes -> kpi_tendencia_doencas -->
+  <line x1="670" y1="480" x2="730" y2="500" stroke="#666" stroke-width="1.6" marker-end="url(#rel)"/>
+  <text x="676" y="510" font-size="10" fill="#666">uf (via hospital)</text>
+
+  <!-- kpis -> views -->
+  <line x1="1010" y1="260" x2="1150" y2="215" stroke="#999" stroke-width="1.3" stroke-dasharray="4,3" marker-end="url(#rel)"/>
+  <line x1="1010" y1="330" x2="1150" y2="280" stroke="#999" stroke-width="1.3" stroke-dasharray="4,3" marker-end="url(#rel)"/>
+  <line x1="1010" y1="500" x2="1150" y2="350" stroke="#999" stroke-width="1.3" stroke-dasharray="4,3" marker-end="url(#rel)"/>
+  <line x1="1010" y1="230" x2="1150" y2="420" stroke="#999" stroke-width="1.3" stroke-dasharray="4,3" marker-end="url(#rel)"/>
+
+  <!-- =================== NOTA DE RODAPÉ =================== -->
+  <rect x="30" y="880" width="1540" height="140" rx="10" fill="#fff" stroke="#ddd"/>
+  <text x="50" y="908" font-size="13" font-weight="700" fill="#333">Notas de leitura do diagrama</text>
+  <text x="50" y="930" font-size="11" fill="#555">• PK = chave primária da tabela · FK = chave estrangeira / campo de junção (join) com outra tabela · (nulo) = coluna sempre nula na fonte de dados atual</text>
+  <text x="50" y="950" font-size="11" fill="#555">• fato_internacoes é particionada fisicamente por (ano, mes) no S3 — MSCK REPAIR TABLE é necessário após cada nova carga para o Athena enxergar as partições</text>
+  <text x="50" y="970" font-size="11" fill="#555">• dim_tempo não tem chave única formal — o join com fato_internacoes é feito por (ano, mes); semana_epidemiologica e trimestre são atributos derivados</text>
+  <text x="50" y="990" font-size="11" fill="#555">• As 4 views de negócio (direita, vermelho) não armazenam dado — são consultas salvas que recalculam a cada execução, sempre refletindo o dado mais recente da Gold</text>
+  <text x="50" y="1010" font-size="11" fill="#555">• Detalhamento completo de cada coluna (tipo, exemplo, regra de negócio) no documento "Dicionário de Dados — VITA.docx"</text>
+</svg>
