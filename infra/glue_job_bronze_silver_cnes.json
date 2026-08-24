@@ -1,0 +1,20 @@
+{
+  "Name": "vita-bronze-to-silver-cnes",
+  "Role": "VITA-Glue-Role",
+  "GlueVersion": "4.0",
+  "WorkerType": "G.1X",
+  "NumberOfWorkers": 2,
+  "Command": {
+    "Name": "glueetl",
+    "ScriptLocation": "s3://vita-glue-scripts-<CONTA>/etl/glue_bronze_to_silver_cnes.py",
+    "PythonVersion": "3"
+  },
+  "DefaultArguments": {
+    "--job-language": "python",
+    "--DATALAKE_BUCKET": "vita-datalake-<CONTA>",
+    "--enable-metrics": "true",
+    "--enable-continuous-cloudwatch-log": "true"
+  },
+  "MaxRetries": 1,
+  "Timeout": 30
+}

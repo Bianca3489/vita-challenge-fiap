@@ -1,0 +1,21 @@
+{
+  "Name": "vita-silver-to-gold",
+  "Role": "VITA-Glue-Role",
+  "GlueVersion": "4.0",
+  "WorkerType": "G.1X",
+  "NumberOfWorkers": 2,
+  "Command": {
+    "Name": "glueetl",
+    "ScriptLocation": "s3://vita-glue-scripts-<CONTA>/etl/glue_silver_to_gold_kpis.py",
+    "PythonVersion": "3"
+  },
+  "DefaultArguments": {
+    "--job-language": "python",
+    "--DATALAKE_BUCKET": "vita-datalake-<CONTA>",
+    "--additional-python-modules": "scikit-learn==1.3.2,pandas==1.5.3",
+    "--enable-metrics": "true",
+    "--enable-continuous-cloudwatch-log": "true"
+  },
+  "MaxRetries": 1,
+  "Timeout": 30
+}

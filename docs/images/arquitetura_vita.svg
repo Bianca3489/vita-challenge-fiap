@@ -1,0 +1,186 @@
+<svg viewBox="0 0 1500 900" xmlns="http://www.w3.org/2000/svg" font-family="'Segoe UI', Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#555"/>
+    </marker>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fafafa"/>
+      <stop offset="100%" stop-color="#f0f0f0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1500" height="900" fill="url(#bgGrad)"/>
+
+  <!-- Título -->
+  <text x="750" y="45" text-anchor="middle" font-size="30" font-weight="700" fill="#7b241c">VITA — Arquitetura da Solução</text>
+  <text x="750" y="72" text-anchor="middle" font-size="15" fill="#555">Vigilância Inteligente de Tendências e Atendimentos · Challenge Oracle &amp; FIAP 2026 · Stack AWS</text>
+
+  <!-- ===================== COLUNA 1: FONTES ===================== -->
+  <text x="115" y="120" text-anchor="middle" font-size="14" font-weight="700" fill="#333">FONTES DE DADOS</text>
+
+  <rect x="20" y="140" width="190" height="70" rx="10" fill="#2c3e50"/>
+  <text x="115" y="168" text-anchor="middle" font-size="13" font-weight="600" fill="#fff">DATASUS / SIH-SUS</text>
+  <text x="115" y="186" text-anchor="middle" font-size="11" fill="#ccc">PySUS · dado real</text>
+  <text x="115" y="200" text-anchor="middle" font-size="10" fill="#999">tabela relacional</text>
+
+  <rect x="20" y="230" width="190" height="70" rx="10" fill="#16a085"/>
+  <text x="115" y="258" text-anchor="middle" font-size="13" font-weight="600" fill="#fff">CNES (Min. Saúde)</text>
+  <text x="115" y="276" text-anchor="middle" font-size="11" fill="#eafaf1">API REST · JSON</text>
+  <text x="115" y="290" text-anchor="middle" font-size="10" fill="#cceee5">estabelecimentos</text>
+
+  <rect x="20" y="320" width="190" height="70" rx="10" fill="#27ae60"/>
+  <text x="115" y="348" text-anchor="middle" font-size="13" font-weight="600" fill="#fff">IBGE Localidades</text>
+  <text x="115" y="366" text-anchor="middle" font-size="11" fill="#eafaf1">API REST · JSON</text>
+  <text x="115" y="380" text-anchor="middle" font-size="10" fill="#cceee5">645 municípios SP</text>
+
+  <!-- ===================== COLUNA 2: INGESTÃO ===================== -->
+  <text x="360" y="120" text-anchor="middle" font-size="14" font-weight="700" fill="#333">INGESTÃO</text>
+  <rect x="270" y="150" width="180" height="220" rx="12" fill="#3776ab"/>
+  <!-- ícone Python: dois círculos entrelaçados estilizados -->
+  <circle cx="345" cy="180" r="16" fill="#3776ab" stroke="#ffd43b" stroke-width="2.5"/>
+  <circle cx="375" cy="192" r="16" fill="#ffd43b" stroke="#3776ab" stroke-width="2.5"/>
+  <text x="360" y="215" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">Python</text>
+  <text x="360" y="238" text-anchor="middle" font-size="11" fill="#e8f0fa">ingest_sih_sus.py</text>
+  <text x="360" y="256" text-anchor="middle" font-size="11" fill="#e8f0fa">ingest_cnes_api.py</text>
+  <text x="360" y="274" text-anchor="middle" font-size="11" fill="#e8f0fa">ingest_csv_auxiliar.py</text>
+  <text x="360" y="300" text-anchor="middle" font-size="10" fill="#c9dcf0">boto3 · pandas</text>
+  <text x="360" y="316" text-anchor="middle" font-size="10" fill="#c9dcf0">requests · pyarrow</text>
+  <path d="M310,336 l3,4 l7,-8" stroke="#ffd43b" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="365" y="340" text-anchor="middle" font-size="10" fill="#ffd43b">fallback sintético</text>
+  <text x="360" y="356" text-anchor="middle" font-size="10" fill="#ffd43b">automático</text>
+
+  <!-- ===================== COLUNA 3: DATALAKE S3 (3 camadas) ===================== -->
+  <text x="610" y="120" text-anchor="middle" font-size="14" font-weight="700" fill="#333">DATALAKE (Amazon S3)</text>
+
+  <rect x="520" y="140" width="180" height="80" rx="10" fill="#cd7f32"/>
+  <circle cx="545" cy="163" r="9" fill="#fff"/>
+  <text x="615" y="168" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">BRONZE</text>
+  <text x="610" y="188" text-anchor="middle" font-size="10" fill="#fff0e0">dado cru</text>
+  <text x="610" y="204" text-anchor="middle" font-size="10" fill="#fff0e0">particionado uf/ano_mes</text>
+
+  <rect x="520" y="235" width="180" height="80" rx="10" fill="#a6a6a6"/>
+  <circle cx="545" cy="258" r="9" fill="none" stroke="#fff" stroke-width="2"/>
+  <text x="615" y="263" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">SILVER</text>
+  <text x="610" y="283" text-anchor="middle" font-size="10" fill="#f2f2f2">limpo, tipado</text>
+  <text x="610" y="299" text-anchor="middle" font-size="10" fill="#f2f2f2">deduplicado</text>
+
+  <rect x="520" y="330" width="180" height="80" rx="10" fill="#d4af37"/>
+  <polygon points="545,354 549,362 555,362 550,367 552,375 545,370 538,375 540,367 535,362 541,362" fill="#fff"/>
+  <text x="615" y="358" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">GOLD</text>
+  <text x="610" y="378" text-anchor="middle" font-size="10" fill="#fff8e0">modelo dimensional</text>
+  <text x="610" y="394" text-anchor="middle" font-size="10" fill="#fff8e0">+ Índice de Pressão</text>
+
+  <!-- Glue ETL badges entre as camadas -->
+  <rect x="440" y="222" width="60" height="26" rx="6" fill="#8c4fff"/>
+  <text x="470" y="240" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">Glue</text>
+
+  <rect x="440" y="317" width="60" height="26" rx="6" fill="#8c4fff"/>
+  <text x="470" y="335" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">Glue</text>
+
+  <rect x="440" y="150" width="60" height="26" rx="6" fill="#8c4fff"/>
+  <text x="470" y="168" text-anchor="middle" font-size="9" font-weight="700" fill="#fff">boto3</text>
+
+  <!-- ===================== COLUNA 4: PROCESSAMENTO / ML ===================== -->
+  <text x="860" y="120" text-anchor="middle" font-size="14" font-weight="700" fill="#333">ETL &amp; MACHINE LEARNING</text>
+  <rect x="770" y="150" width="180" height="260" rx="12" fill="#8c4fff"/>
+  <polygon points="855,168 845,192 855,192 850,206 868,178 856,178 862,168" fill="#ffd43b"/>
+  <text x="860" y="210" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">AWS Glue (PySpark)</text>
+  <text x="860" y="232" text-anchor="middle" font-size="10" fill="#ede4ff">Bronze → Silver → Gold</text>
+  <text x="860" y="248" text-anchor="middle" font-size="10" fill="#ede4ff">joins · schema fix</text>
+  <line x1="800" y1="262" x2="920" y2="262" stroke="#ede4ff" stroke-width="1"/>
+  <circle cx="860" cy="278" r="11" fill="none" stroke="#fff" stroke-width="3"/>
+  <circle cx="860" cy="278" r="4" fill="#fff"/>
+  <text x="860" y="306" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">scikit-learn</text>
+  <text x="860" y="324" text-anchor="middle" font-size="10" fill="#ede4ff">K-Means clustering</text>
+  <text x="860" y="340" text-anchor="middle" font-size="10" fill="#ede4ff">Índice de Pressão</text>
+  <text x="860" y="356" text-anchor="middle" font-size="10" fill="#ede4ff">Hospitalar (0-100)</text>
+  <text x="860" y="380" text-anchor="middle" font-size="9" fill="#c9b3ff">Glue 4.0 · Python 3</text>
+  <text x="860" y="396" text-anchor="middle" font-size="9" fill="#c9b3ff">pandas 1.5.3</text>
+
+  <!-- ===================== COLUNA 5: CONSULTA ===================== -->
+  <text x="1090" y="120" text-anchor="middle" font-size="14" font-weight="700" fill="#333">CONSULTA</text>
+  <rect x="1010" y="150" width="160" height="130" rx="12" fill="#8c4fff"/>
+  <circle cx="1084" cy="180" r="10" fill="none" stroke="#fff" stroke-width="3"/>
+  <line x1="1092" y1="188" x2="1100" y2="196" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+  <text x="1090" y="216" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">Amazon Athena</text>
+  <text x="1090" y="238" text-anchor="middle" font-size="10" fill="#ede4ff">SQL serverless</text>
+  <text x="1090" y="254" text-anchor="middle" font-size="10" fill="#ede4ff">views de negócio</text>
+  <text x="1090" y="270" text-anchor="middle" font-size="10" fill="#ede4ff">external table (CSV)</text>
+
+  <!-- ===================== COLUNA 6: APRESENTAÇÃO ===================== -->
+  <text x="1350" y="120" text-anchor="middle" font-size="14" font-weight="700" fill="#333">APRESENTAÇÃO</text>
+
+  <rect x="1230" y="150" width="240" height="110" rx="12" fill="#ff4b4b"/>
+  <rect x="1338" y="176" width="6" height="14" fill="#fff"/>
+  <rect x="1347" y="168" width="6" height="22" fill="#fff"/>
+  <rect x="1356" y="172" width="6" height="18" fill="#fff"/>
+  <text x="1350" y="208" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">Streamlit Dashboard</text>
+  <text x="1350" y="228" text-anchor="middle" font-size="10" fill="#ffe0e0">Visão Geral · Evolutiva</text>
+  <text x="1350" y="244" text-anchor="middle" font-size="10" fill="#ffe0e0">Mapa · Hospitais Afetados</text>
+
+  <rect x="1230" y="280" width="240" height="110" rx="12" fill="#d97757"/>
+  <path d="M1335,300 h30 a5,5 0 0 1 5,5 v10 a5,5 0 0 1 -5,5 h-18 l-8,8 v-8 h-4 a5,5 0 0 1 -5,-5 v-10 a5,5 0 0 1 5,-5 z" fill="#fff"/>
+  <text x="1350" y="338" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">Amazon Bedrock</text>
+  <text x="1350" y="358" text-anchor="middle" font-size="10" fill="#ffe9e0">Claude Sonnet 4.6</text>
+  <text x="1350" y="374" text-anchor="middle" font-size="10" fill="#ffe9e0">"Ask VITA" · NL → SQL</text>
+
+  <!-- ===================== SETAS DE FLUXO ===================== -->
+  <line x1="210" y1="175" x2="270" y2="220" stroke="#555" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="210" y1="265" x2="270" y2="255" stroke="#555" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="210" y1="355" x2="270" y2="290" stroke="#555" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <line x1="450" y1="180" x2="520" y2="180" stroke="#555" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="700" y1="180" x2="770" y2="200" stroke="#555" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="700" y1="370" x2="770" y2="310" stroke="#555" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <line x1="950" y1="230" x2="1010" y2="215" stroke="#555" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="1170" y1="200" x2="1230" y2="205" stroke="#555" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="1170" y1="240" x2="1230" y2="330" stroke="#555" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- ===================== EXECUÇÃO (rodapé) ===================== -->
+  <rect x="20" y="470" width="1450" height="90" rx="12" fill="#eee" stroke="#ccc"/>
+  <circle cx="52" cy="495" r="7" fill="none" stroke="#333" stroke-width="1.5"/>
+  <line x1="52" y1="495" x2="52" y2="490" stroke="#333" stroke-width="1.2"/>
+  <line x1="52" y1="495" x2="55" y2="497" stroke="#333" stroke-width="1.2"/>
+  <text x="65" y="500" font-size="13" font-weight="700" fill="#333">EXECUÇÃO DO PIPELINE</text>
+  <text x="45" y="522" font-size="11" fill="#555">Disparo manual, na ordem: Ingestão (Python) → Glue Bronze→Silver (SIH e CNES) → Glue Silver→Gold (modelo dimensional + K-Means)</text>
+  <text x="45" y="542" font-size="11" fill="#555">Sem orquestrador automatizado nesta fase — escopo mantido enxuto para a Sprint 2, execução via AWS CLI (aws glue start-job-run)</text>
+
+  <!-- ===================== LEGENDA / STACK COMPLETA ===================== -->
+  <rect x="20" y="580" width="1450" height="290" rx="12" fill="#ffffff" stroke="#ddd"/>
+  <text x="45" y="612" font-size="15" font-weight="700" fill="#7b241c">Stack tecnológica completa</text>
+
+  <!-- coluna esquerda: dados/infra -->
+  <text x="45" y="645" font-size="12" font-weight="700" fill="#333">Dados &amp; Infraestrutura</text>
+  <text x="45" y="666" font-size="11" fill="#555">• Amazon S3 — datalake (Bronze/Silver/Gold)</text>
+  <text x="45" y="686" font-size="11" fill="#555">• AWS Glue Data Catalog — catálogo de metadados</text>
+  <text x="45" y="706" font-size="11" fill="#555">• AWS Glue Jobs (PySpark, Glue 4.0) — ETL</text>
+  <text x="45" y="726" font-size="11" fill="#555">• Amazon Athena — consulta SQL serverless</text>
+  <text x="45" y="746" font-size="11" fill="#555">• AWS IAM — usuários e políticas de acesso</text>
+  <text x="45" y="766" font-size="11" fill="#555">• AWS CLI — disparo manual dos Glue Jobs</text>
+
+  <!-- coluna meio: linguagens/libs -->
+  <text x="530" y="645" font-size="12" font-weight="700" fill="#333">Linguagens &amp; Bibliotecas</text>
+  <text x="530" y="666" font-size="11" fill="#555">• Python 3.12 — linguagem principal</text>
+  <text x="530" y="686" font-size="11" fill="#555">• PySpark — processamento distribuído (ETL)</text>
+  <text x="530" y="706" font-size="11" fill="#555">• pandas, pyarrow, boto3, requests</text>
+  <text x="530" y="726" font-size="11" fill="#555">• scikit-learn — K-Means (Índice de Pressão)</text>
+  <text x="530" y="746" font-size="11" fill="#555">• PySUS — acesso a dados reais do DATASUS</text>
+  <text x="530" y="766" font-size="11" fill="#555">• SQL (Presto/Trino, dialeto Athena)</text>
+
+  <!-- coluna direita: apresentação/IA -->
+  <text x="1015" y="645" font-size="12" font-weight="700" fill="#333">Apresentação &amp; IA</text>
+  <text x="1015" y="666" font-size="11" fill="#555">• Streamlit — dashboard interativo em Python</text>
+  <text x="1015" y="686" font-size="11" fill="#555">• Plotly — gráficos e mapas interativos</text>
+  <text x="1015" y="706" font-size="11" fill="#555">• awswrangler — ponte pandas ↔ Athena</text>
+  <text x="1015" y="726" font-size="11" fill="#555">• Amazon Bedrock — plataforma de IA generativa</text>
+  <text x="1015" y="746" font-size="11" fill="#555">• Claude Sonnet 4.6 (Anthropic) — NL → SQL</text>
+  <text x="1015" y="766" font-size="11" fill="#555">• Streamlit Community Cloud — deploy/publicação</text>
+
+  <!-- fontes de dados reais -->
+  <line x1="45" y1="790" x2="1450" y2="790" stroke="#eee" stroke-width="1"/>
+  <text x="45" y="815" font-size="12" font-weight="700" fill="#333">Fontes de dados 100% públicas e reais</text>
+  <text x="45" y="838" font-size="11" fill="#555">SIH/SUS (DATASUS) · CNES (Ministério da Saúde) · IBGE Localidades — Estado de São Paulo, recorte Dengue (CID-10 A90), 2023–2025</text>
+
+  <text x="750" y="885" text-anchor="middle" font-size="10" fill="#999">Grupo 1TSCOB · Challenge Oracle &amp; FIAP 2026 · Sprint 2 · Implementação adaptada para stack AWS</text>
+</svg>

@@ -1,0 +1,43 @@
+# --- Segredos e credenciais (NUNCA versionar) ---
+.env
+.env.*
+*.pem
+*.key
+credentials
+credentials.json
+**/.streamlit/secrets.toml
+codigos_cnes_reais.csv
+*_chave.rtf
+*-chave.rtf
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.venv/
+venv/
+env/
+.pytest_cache/
+
+# --- Dados locais de teste / fallback ---
+output_local/
+*.parquet
+!docs/**/*.parquet
+
+# --- Logs de ingestão (podem ser grandes, não fazem sentido versionados) ---
+log_ingest*.txt
+
+# --- Sistema operacional ---
+.DS_Store
+Thumbs.db
+
+# --- Editor ---
+.vscode/
+.idea/
+*.swp
+
+# --- Terraform (se vier a ser usado) ---
+*.tfstate
+*.tfstate.*
+.terraform/

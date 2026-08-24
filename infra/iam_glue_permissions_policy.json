@@ -1,0 +1,56 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "S3DatalakeAccess",
+      "Effect": "Allow",
+      "Action": ["s3:GetObject", "s3:PutObject", "s3:ListBucket", "s3:DeleteObject"],
+      "Resource": [
+        "arn:aws:s3:::vita-datalake-*",
+        "arn:aws:s3:::vita-datalake-*/*",
+        "arn:aws:s3:::vita-glue-scripts-*",
+        "arn:aws:s3:::vita-glue-scripts-*/*",
+        "arn:aws:s3:::vita-athena-results-*",
+        "arn:aws:s3:::vita-athena-results-*/*"
+      ]
+    },
+    {
+      "Sid": "GlueCatalogAndJobs",
+      "Effect": "Allow",
+      "Action": [
+        "glue:GetDatabase", "glue:CreateDatabase", "glue:GetTable", "glue:CreateTable",
+        "glue:UpdateTable", "glue:GetPartitions", "glue:BatchCreatePartition",
+        "glue:StartJobRun", "glue:GetJobRun", "glue:GetJobRuns", "glue:BatchStopJobRun",
+        "glue:StartCrawler", "glue:GetCrawler"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AthenaQueries",
+      "Effect": "Allow",
+      "Action": [
+        "athena:StartQueryExecution", "athena:GetQueryExecution",
+        "athena:GetQueryResults", "athena:StopQueryExecution"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "Logging",
+      "Effect": "Allow",
+      "Action": ["logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents"],
+      "Resource": "*"
+    },
+    {
+      "Sid": "BedrockAskVita",
+      "Effect": "Allow",
+      "Action": ["bedrock:InvokeModel"],
+      "Resource": "*"
+    },
+    {
+      "Sid": "StepFunctionsInvokeGlueLambda",
+      "Effect": "Allow",
+      "Action": ["states:StartExecution", "lambda:InvokeFunction"],
+      "Resource": "*"
+    }
+  ]
+}
