@@ -156,6 +156,28 @@ def carregar_ranking_criticos() -> pd.DataFrame:
 
 
 # ---------------------------------------------------------------------------
+# Índice de Pressão Hospitalar (Machine Learning — K-Means)
+# Granularidade: hospital x mês, TODAS AS DOENÇAS (não é filtrado por dengue,
+# de propósito — é uma leitura geral de capacidade hospitalar, complementar
+# ao recorte de dengue do resto do dashboard). Usa as views que já existiam
+# no Athena desde o início do projeto, só nunca tinham sido ligadas na UI.
+# ---------------------------------------------------------------------------
+@st.cache_data(ttl=300)
+def carregar_indice_pressao_mapa() -> pd.DataFrame:
+    return query(f"SELECT * FROM vw_pressao_por_regiao WHERE uf = '{UF_FILTRO}'")
+
+
+@st.cache_data(ttl=300)
+def carregar_indice_pressao_ranking() -> pd.DataFrame:
+    return query(f"""
+        SELECT * FROM vw_ranking_hospitais_criticos
+        WHERE uf = '{UF_FILTRO}'
+        ORDER BY ano DESC, mes DESC, ranking_criticidade
+        LIMIT 30
+    """)
+
+
+# ---------------------------------------------------------------------------
 # Cabeçalho
 # ---------------------------------------------------------------------------
 col_titulo, col_logo = st.columns([5, 1])
@@ -167,8 +189,9 @@ with col_titulo:
         f"**{UF_FILTRO}** · **{ANO_INICIO_FILTRO}–{ANO_FIM_FILTRO}**"
     )
 
-aba_geral, aba_evolutiva, aba_mapa, aba_alertas, aba_chat = st.tabs(
-    ["📊 Visão Geral", "📈 Visão Evolutiva", "🗺️ Mapa de Casos", "🚨 Hospitais Mais Afetados", "💬 Ask VITA"]
+aba_geral, aba_evolutiva, aba_mapa, aba_alertas, aba_pressao, aba_chat = st.tabs(
+    ["📊 Visão Geral", "📈 Visão Evolutiva", "🗺️ Mapa de Casos", "🚨 Hospitais Mais Afetados",
+     "🧠 Pressão Hospitalar (Geral)", "💬 Ask VITA"]
 )
 
 # ---------------------------------------------------------------------------
@@ -306,7 +329,88 @@ with aba_alertas:
         )
 
 # ---------------------------------------------------------------------------
-# ABA 5 — Ask VITA (Bedrock: pergunta em português -> SQL -> resposta)
+# ABA 5 — Índice de Pressão Hospitalar (Machine Learning, todas as doenças)
+# ---------------------------------------------------------------------------
+with aba_pressao:
+    st.caption(
+        "⚠️ Esta aba **não é filtrada por dengue** — mostra a capacidade hospitalar geral "
+        "(todas as doenças), calculada via **K-Means (scikit-learn)** sobre volume de "
+        "internações, permanência média e proporção de pacientes críticos. "
+        "É uma visão complementar às demais abas, focadas só em dengue."
+    )
+
+    df_mapa_pressao = carregar_indice_pressao_mapa()
+    df_ranking_pressao = carregar_indice_pressao_ranking()
+
+    if df_mapa_pressao.empty and df_ranking_pressao.empty:
+        st.warning("Nenhum dado retornado. Confira se o job `vita-silver-to-gold` já rodou "
+                    "e se as views `vw_pressao_por_regiao`/`vw_ranking_hospitais_criticos` existem.")
+    else:
+        # --- KPIs de resumo ---
+        if not df_ranking_pressao.empty:
+            c1, c2, c3 = st.columns(3)
+            c1.metric("Índice de pressão médio", f"{df_ranking_pressao['indice_pressao'].mean():.1f} / 100")
+            criticos = (df_ranking_pressao["nivel_risco"] == "Sobrecarga iminente").sum()
+            c2.metric("Hospitais em Sobrecarga iminente", int(criticos))
+            c3.metric("Hospitais monitorados", df_ranking_pressao["nome_estabelecimento"].nunique())
+
+        st.divider()
+
+        col_a, col_b = st.columns([3, 2])
+        with col_a:
+            st.subheader("Mapa de pressão hospitalar por região")
+            if df_mapa_pressao.empty:
+                st.info("Sem dados geográficos suficientes.")
+            else:
+                df_m = df_mapa_pressao.dropna(subset=["latitude", "longitude"])
+                fig_mapa = px.scatter_map(
+                    df_m, lat="latitude", lon="longitude",
+                    color="nivel_risco_regiao", size="indice_pressao_medio",
+                    color_discrete_map=NIVEL_COR,
+                    hover_name="nome_municipio",
+                    hover_data={"indice_pressao_medio": ":.1f", "internacoes_por_1000hab": ":.2f",
+                                "latitude": False, "longitude": False},
+                    zoom=6, height=500, map_style="open-street-map",
+                )
+                fig_mapa.update_layout(margin=dict(l=0, r=0, t=0, b=0))
+                st.plotly_chart(fig_mapa, use_container_width=True)
+
+        with col_b:
+            st.subheader("Distribuição por nível de risco")
+            if df_ranking_pressao.empty:
+                st.info("Sem dados suficientes.")
+            else:
+                contagem = df_ranking_pressao["nivel_risco"].value_counts().reset_index()
+                contagem.columns = ["nivel_risco", "qtd_hospitais"]
+                fig_pizza = px.pie(
+                    contagem, names="nivel_risco", values="qtd_hospitais",
+                    color="nivel_risco", color_discrete_map=NIVEL_COR, hole=0.45,
+                )
+                st.plotly_chart(fig_pizza, use_container_width=True)
+
+        st.divider()
+        st.subheader("Ranking de hospitais críticos (todas as doenças)")
+        if df_ranking_pressao.empty:
+            st.success("Nenhum hospital em nível Crítico ou Sobrecarga iminente no momento. ✅")
+        else:
+            for _, linha in df_ranking_pressao.head(20).iterrows():
+                cor = NIVEL_COR.get(linha["nivel_risco"], "#95a5a6")
+                st.markdown(
+                    f"""
+                    <div style="border-left: 6px solid {cor}; padding: 10px 16px; margin-bottom: 8px;
+                                background-color: rgba(0,0,0,0.03); border-radius: 4px;">
+                        <b>{linha['nome_estabelecimento']}</b> — {linha['nome_municipio']}/{linha['uf']}<br/>
+                        Nível: <b style="color:{cor}">{linha['nivel_risco']}</b> |
+                        Índice de pressão: <b>{linha['indice_pressao']:.1f}</b> |
+                        Internações no mês: {int(linha['qtd_internacoes'])} |
+                        Permanência média: {linha['permanencia_media']:.1f} dias
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
+
+# ---------------------------------------------------------------------------
+# ABA 6 — Ask VITA (Bedrock: pergunta em português -> SQL -> resposta)
 # ---------------------------------------------------------------------------
 with aba_chat:
     st.caption(
