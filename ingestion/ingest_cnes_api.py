@@ -35,6 +35,7 @@ import time
 from datetime import datetime
 
 import boto3
+import pandas as pd
 import requests
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
@@ -58,6 +59,35 @@ MUNICIPIOS_UF_FALLBACK = {
     "CE": [("Fortaleza", 2304400), ("Sobral", 2312908)],
     "RS": [("Porto Alegre", 4314902)],
 }
+
+CAMINHO_COORDENADAS_SP = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), "municipios_sp_coordenadas.csv"
+)
+
+
+def _carregar_municipios_com_coordenadas(uf: str) -> pd.DataFrame | None:
+    """Carrega o arquivo local com código IBGE, nome e coordenadas REAIS dos
+    municípios da UF (hoje só temos o arquivo pronto para SP).
+
+    Por que um arquivo local em vez de buscar na API do IBGE: a API de
+    Localidades usada em `_buscar_lista_municipios_reais` (mantida abaixo só
+    como fallback) NÃO retorna latitude/longitude — só nome e código. Usar
+    essas coordenadas junto com uma geração de lat/lon aleatória e
+    desconectada do município sorteado foi exatamente o bug que fazia
+    hospitais de Campinas aparecerem no meio do oceano no mapa do
+    dashboard: o nome do município era real, mas a coordenada não tinha
+    nenhuma relação com ele. O arquivo local resolve isso pareando cada
+    hospital sintético com a coordenada real do município que ele recebeu.
+    """
+    if uf.upper() != "SP" or not os.path.exists(CAMINHO_COORDENADAS_SP):
+        return None
+    try:
+        df = pd.read_csv(CAMINHO_COORDENADAS_SP)
+        if {"codigo_ibge", "nome", "latitude", "longitude"}.issubset(df.columns):
+            return df
+    except Exception as e:  # noqa: BLE001
+        log.warning(f"Não consegui ler {CAMINHO_COORDENADAS_SP} ({e}).")
+    return None
 
 IBGE_MUNICIPIOS_URL = "https://servicodados.ibge.gov.br/api/v1/localidades/estados/{uf}/municipios"
 
@@ -229,14 +259,28 @@ def generate_synthetic_cnes(uf: str, n_estabelecimentos: int = 40) -> list[dict]
     confirmado (codigo_uf, codigo_municipio, latitude_estabelecimento_decimo_grau,
     codigo_tipo_unidade, etc.) — não no schema simplificado antigo."""
     codigo_uf = UF_PARA_CODIGO_IBGE.get(uf.upper(), 35)
-    municipios = _buscar_lista_municipios_reais(uf)
+    df_municipios = _carregar_municipios_com_coordenadas(uf)
+
+    if df_municipios is None:
+        # fallback final: sem coordenadas reais disponíveis, usa a lista
+        # pequena antiga (só nome/código, sem lat/lon confiável)
+        log.warning(f"Sem arquivo de coordenadas reais para {uf} -- usando fallback "
+                     f"pequeno, hospitais sintéticos vão concentrar em poucas cidades.")
+        municipios_fallback = MUNICIPIOS_UF_FALLBACK.get(uf, [("Município Exemplo", 9999999)])
+        df_municipios = pd.DataFrame(
+            [{"codigo_ibge": cod, "nome": nome, "latitude": -23.5, "longitude": -46.6}
+             for nome, cod in municipios_fallback]
+        )
+
     # tipos de unidade comuns no CNES (código real): 05=Hospital Geral,
     # 07=Hospital Especializado, 02=UBS/Posto de Saúde, 73=Pronto Socorro
     tipos_unidade = [5, 7, 2, 73]
 
     registros = []
     for i in range(n_estabelecimentos):
-        nome_municipio, codigo_municipio = random.choice(municipios)
+        municipio = df_municipios.sample(1).iloc[0]
+        nome_municipio = municipio["nome"]
+        codigo_municipio = int(municipio["codigo_ibge"])
         eh_hospital = random.random() < 0.4
         registros.append({
             "codigo_cnes": 2000000 + i,
@@ -246,14 +290,20 @@ def generate_synthetic_cnes(uf: str, n_estabelecimentos: int = 40) -> list[dict]
             "codigo_tipo_unidade": random.choice([5, 7]) if eh_hospital else random.choice(tipos_unidade),
             "codigo_uf": codigo_uf,
             "codigo_municipio": codigo_municipio,
-            "latitude_estabelecimento_decimo_grau": round(-23.5 + random.uniform(-3, 3), 6),
-            "longitude_estabelecimento_decimo_grau": round(-46.6 + random.uniform(-3, 3), 6),
+            # coordenada REAL do município sorteado, com um jitter pequeno
+            # (± ~0.03 grau, uns 3km) só pra evitar marcadores 100%
+            # sobrepostos no mapa -- não mais um ponto aleatório desconexo
+            # do município (esse era o bug: hospital dizia "Campinas" mas
+            # a coordenada podia cair no meio do oceano)
+            "latitude_estabelecimento_decimo_grau": round(float(municipio["latitude"]) + random.uniform(-0.03, 0.03), 6),
+            "longitude_estabelecimento_decimo_grau": round(float(municipio["longitude"]) + random.uniform(-0.03, 0.03), 6),
             "estabelecimento_possui_atendimento_hospitalar": 1 if eh_hospital else 0,
             "numero_telefone_estabelecimento":
                 f"({random.randint(11, 99)}) 3{random.randint(1000,9999)}-{random.randint(1000,9999)}",
             "data_atualizacao": datetime.now().strftime("%Y-%m-%d"),
         })
-    log.info(f"Gerados {len(registros)} estabelecimentos sintéticos de CNES para {uf}")
+    log.info(f"Gerados {len(registros)} estabelecimentos sintéticos de CNES para {uf}, "
+              f"com coordenadas reais dos municípios sorteados.")
     return registros
 
 

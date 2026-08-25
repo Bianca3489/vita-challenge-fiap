@@ -48,6 +48,10 @@ BEDROCK_MODEL_ID = os.environ.get(
 # (A91 = Dengue hemorrágica — excluído a pedido, foco só em A90)
 # ---------------------------------------------------------------------------
 UF_FILTRO = "SP"
+# Centro geográfico real do estado de SP (fonte: IBGE) -- usado pra manter os
+# mapas sempre focados no estado, independente de onde os pontos caiam.
+CENTRO_MAPA_SP = {"lat": -22.19, "lon": -48.79}
+ZOOM_MAPA_SP = 6
 ANO_INICIO_FILTRO = 2023
 ANO_FIM_FILTRO = 2025
 CIDS_DENGUE = ("A90",)
@@ -291,7 +295,7 @@ with aba_mapa:
             hover_name="nome_municipio",
             hover_data={"qtd_casos_dengue": True, "casos_por_1000hab": ":.2f",
                         "latitude": False, "longitude": False},
-            zoom=6, height=600, map_style="open-street-map",
+            center=CENTRO_MAPA_SP, zoom=ZOOM_MAPA_SP, height=600, map_style="open-street-map",
         )
         fig.update_layout(margin=dict(l=0, r=0, t=0, b=0))
         st.plotly_chart(fig, use_container_width=True)
@@ -370,7 +374,7 @@ with aba_pressao:
                     hover_name="nome_municipio",
                     hover_data={"indice_pressao_medio": ":.1f", "internacoes_por_1000hab": ":.2f",
                                 "latitude": False, "longitude": False},
-                    zoom=6, height=500, map_style="open-street-map",
+                    center=CENTRO_MAPA_SP, zoom=ZOOM_MAPA_SP, height=500, map_style="open-street-map",
                 )
                 fig_mapa.update_layout(margin=dict(l=0, r=0, t=0, b=0))
                 st.plotly_chart(fig_mapa, use_container_width=True)
