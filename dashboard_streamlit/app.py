@@ -99,7 +99,9 @@ def carregar_acompanhamento_geral() -> pd.DataFrame:
             AVG(f.dias_permanencia) AS permanencia_media
         FROM fato_internacoes f
         JOIN dim_hospital h ON h.cnes_id = f.cnes_id
-        LEFT JOIN municipios_referencia m ON m.codigo_municipio = h.codigo_municipio
+        LEFT JOIN municipios_referencia m
+            ON m.codigo_municipio = h.codigo_municipio
+            OR CAST(m.codigo_municipio / 10 AS BIGINT) = h.codigo_municipio
         WHERE f.cid_principal IN {CIDS_DENGUE_SQL}
           AND h.uf = '{UF_FILTRO}'
           AND f.ano BETWEEN {ANO_INICIO_FILTRO} AND {ANO_FIM_FILTRO}
@@ -129,7 +131,9 @@ def carregar_pressao_por_regiao() -> pd.DataFrame:
             CAST(COUNT(*) AS DOUBLE) / NULLIF(m.populacao, 0) * 1000 AS casos_por_1000hab
         FROM fato_internacoes f
         JOIN dim_hospital h ON h.cnes_id = f.cnes_id
-        LEFT JOIN municipios_referencia m ON m.codigo_municipio = h.codigo_municipio
+        LEFT JOIN municipios_referencia m
+            ON m.codigo_municipio = h.codigo_municipio
+            OR CAST(m.codigo_municipio / 10 AS BIGINT) = h.codigo_municipio
         WHERE f.cid_principal IN {CIDS_DENGUE_SQL}
           AND h.uf = '{UF_FILTRO}'
           AND f.ano BETWEEN {ANO_INICIO_FILTRO} AND {ANO_FIM_FILTRO}
@@ -149,7 +153,9 @@ def carregar_ranking_criticos() -> pd.DataFrame:
             RANK() OVER (ORDER BY COUNT(*) DESC) AS ranking_criticidade
         FROM fato_internacoes f
         JOIN dim_hospital h ON h.cnes_id = f.cnes_id
-        LEFT JOIN municipios_referencia m ON m.codigo_municipio = h.codigo_municipio
+        LEFT JOIN municipios_referencia m
+            ON m.codigo_municipio = h.codigo_municipio
+            OR CAST(m.codigo_municipio / 10 AS BIGINT) = h.codigo_municipio
         WHERE f.cid_principal IN {CIDS_DENGUE_SQL}
           AND h.uf = '{UF_FILTRO}'
           AND f.ano BETWEEN {ANO_INICIO_FILTRO} AND {ANO_FIM_FILTRO}
