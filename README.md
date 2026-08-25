@@ -17,9 +17,11 @@ recorte analítico em **Dengue (CID-10 A90) — Estado de São Paulo — 2023 a 
 
 | O quê | Onde |
 |---|---|
-| **Dashboard ao vivo** | _adicione aqui o link do Streamlit Community Cloud após o deploy_ |
+| **Dashboard ao vivo** | **[vita-challenge-fiap.streamlit.app](https://vita-challenge-fiap-bjxdxvahzrapprmlmzdweqn.streamlit.app/)** |
 | Vídeo pitch | _adicione aqui o link do YouTube_ |
 | Guia de setup do zero (sem saber AWS) | [`GUIA_PASSO_A_PASSO_DO_ZERO.md`](./GUIA_PASSO_A_PASSO_DO_ZERO.md) |
+| Dicionário de dados (todas as tabelas/views) | [`docs/Dicionario_de_Dados_VITA.docx`](./docs/Dicionario_de_Dados_VITA.docx) |
+| Diagrama de relacionamento entre tabelas | [`docs/images/dicionario_dados_er.svg`](./docs/images/dicionario_dados_er.svg) |
 | Como conectar o dashboard | [`dashboard_streamlit/SETUP.md`](./dashboard_streamlit/SETUP.md) |
 
 ---
